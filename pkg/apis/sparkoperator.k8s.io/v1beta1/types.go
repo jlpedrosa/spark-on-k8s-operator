@@ -385,6 +385,9 @@ type SparkPodSpec struct {
 	// Sidecars is a list of sidecar containers that run along side the main Spark container.
 	// Optional.
 	Sidecars []apiv1.Container `json:"sidecars,omitempty"`
+	// NodeSelector is the Kubernetes node selector to be added to the driver and executor pods.
+	// Optional.
+	NodeSelector map[string]string `json:"nodeSelector,omitempty"`
 }
 
 // DriverSpec is specification of the driver.
