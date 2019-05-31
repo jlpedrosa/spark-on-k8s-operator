@@ -388,6 +388,9 @@ type SparkPodSpec struct {
 	// NodeSelector is the Kubernetes node selector to be added to the driver and executor pods.
 	// Optional.
 	NodeSelector map[string]string `json:"nodeSelector,omitempty"`
+	//DnsConfig is the Kubernetes defintion of dns settings for the pods
+	// Optional
+	DNSConfig *apiv1.PodDNSConfig `json:"dnsConfig,omitempty"`
 }
 
 // DriverSpec is specification of the driver.

@@ -56,6 +56,7 @@ func patchSparkPod(pod *corev1.Pod, app *v1beta1.SparkApplication) []patchOperat
 	patchOps = append(patchOps, addTolerations(pod, app)...)
 	patchOps = append(patchOps, addSidecarContainers(pod, app)...)
 	patchOps = append(patchOps, addNodeSelectors(pod, app)...)
+	patchOps = append(patchOps, addDnsConfig(pod, app)...)
 
 	op := addSchedulerName(pod, app)
 	if op != nil {
@@ -307,6 +308,21 @@ func addNodeSelectors(pod *corev1.Pod, app *v1beta1.SparkApplication) []patchOpe
 	var ops []patchOperation
 	if len(tolerations) > 0 {
 		ops = append(ops, patchOperation{Op: "add", Path: "/spec/nodeSelector", Value: tolerations})
+	}
+	return ops
+}
+
+func addDnsConfig(pod *corev1.Pod, app *v1beta1.SparkApplication) []patchOperation {
+	var dnsConf *corev1.PodDNSConfig
+	if util.IsDriverPod(pod) {
+		dnsConf = app.Spec.Driver.DNSConfig
+	} else if util.IsExecutorPod(pod) {
+		dnsConf = app.Spec.Executor.DNSConfig
+	}
+
+	var ops []patchOperation
+	if dnsConf != nil {
+		ops = append(ops, patchOperation{Op: "add", Path: "/spec/dnsConfig", Value: dnsConf})
 	}
 	return ops
 }
